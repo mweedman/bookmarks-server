@@ -21,6 +21,7 @@ bookmarksRouter
   .get((req,res,next) => {
     bookmarksService.getAllBookmarks(req.app.get('db'))
       .then(bookmarks => {
+        console.log(bookmarks);
         res.json(bookmarks.map(serializeBookmark));
       })
       .catch(next);
@@ -96,7 +97,7 @@ bookmarksRouter
   .delete((req, res, next) => {
     const { id } = req.params;
     bookmarksService.deleteBookmark(req.app.get('db'), id)
-      .then(numRowsAffected => {
+      .then(id => {
         logger.info(`Bookmark with id ${id} deleted.`);
         res
           .status(204)

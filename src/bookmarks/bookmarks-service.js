@@ -1,4 +1,5 @@
 const bookmarksService = {
+   
   getAllBookmarks(db){
     return db('bookmarks')
       .select('*');
