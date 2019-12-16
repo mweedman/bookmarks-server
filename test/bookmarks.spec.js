@@ -1,9 +1,9 @@
 const knex = require('knex');
-const fixtures = require('./bookmarks.fixtures');
+const fixtures = require('./bookmarks-fixtures');
 const app = require('../src/app');
 
 describe('Bookmarks', () => {
-  let db;
+  let db, bookmarks;
 
   before('make knex', () => {
     db = knex({
@@ -26,12 +26,12 @@ describe('Bookmarks', () => {
   });
 
   describe('Unauthorized requests', () => {
-    const testBookmarks = fixtures.makeBookmarksArray();
+    bookmarks = fixtures.makeBookmarks();
 
     beforeEach('insert bookmarks', () => {
       return db
         .into('bookmarks')
-        .insert(testBookmarks);
+        .insert(bookmarks);
     });
 
     it('responds with 401 Unauthorized for GET /bookmarks', () => {
@@ -48,14 +48,14 @@ describe('Bookmarks', () => {
     });
 
     it('responds with 401 Unauthorized for GET /bookmarks/:id', () => {
-      const secondBookmark = testBookmarks[1];
+      const secondBookmark = bookmarks[1];
       return supertest(app)
         .get(`/bookmarks/${secondBookmark.id}`)
         .expect(401, { error: 'Unauthorized request' });
     });
 
     it('responds with 401 Unauthorized for DELETE /bookmarks/:id', () => {
-      const aBookmark = testBookmarks[1];
+      const aBookmark = bookmarks[1];
       return supertest(app)
         .delete(`/bookmarks/${aBookmark.id}`)
         .expect(401, { error: 'Unauthorized request' });
@@ -69,6 +69,21 @@ describe('Bookmarks', () => {
           .get('/bookmarks')
           .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
           .expext(200, []);
+      });
+    });
+    
+    context('Given there is valid data in the database', () => {
+      bookmarks = fixtures.makeBookmarks();
+      beforeEach('insert data', () => {
+        return db('bookmarks')
+          .insert(bookmarks);
+      });
+
+      it('returns the array of bookmarks', () => {
+        return supertest(app)
+          .get('/bookmarks')
+          .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+          .expect(200, bookmarks);
       });
     });
   });

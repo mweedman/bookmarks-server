@@ -3,5 +3,5 @@ CREATE TABLE bookmarks (
     title TEXT NOT NULL,
     url TEXT,
     rating NUMERIC NOT NULL,
-    description TEXT,
+    description TEXT
 );

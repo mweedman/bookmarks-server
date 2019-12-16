@@ -17,7 +17,7 @@ const serializeBookmark = bookmark => ({
 });
 
 bookmarksRouter
-  .route('/')
+  .route('/bookmarks')
   .get((req,res,next) => {
     bookmarksService.getAllBookmarks(req.app.get('db'))
       .then(bookmarks => {
@@ -73,7 +73,7 @@ bookmarksRouter
   });
   
 bookmarksRouter
-  .route('/:id')
+  .route('/bookmarks/:id')
   .all((req, res, next) => {
     const { id } = req.params;
     bookmarksService.getById(req.app.get('db'), id)

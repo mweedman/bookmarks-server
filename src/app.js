@@ -17,14 +17,18 @@ const morganOption = (NODE_ENV === 'production')
 app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
+app.use(authentication);
 app.use(express.json());
-app.use('/bookmarks', bookmarksRouter);
+app.use(bookmarksRouter);
 
 
 app.use(errorHandler);
 
-app.use(authentication);
 
+
+app.get('/', (req, res) => {
+  res.send('Hello, world!');
+});
 
 
 module.exports = app;
